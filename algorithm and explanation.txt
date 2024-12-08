@@ -1,0 +1,59 @@
+HTML to DNA Sequence
+
+#Each oligo is 115bp long
+#Each oligo consists of 19bp address to identify segments
+#Each oligo has 96bp of data i.e. 12 bytes of data (1byte of data takes up 8 bp therefore 8*12=96 and 12 bytes)
+#Each oligo is flanked by 22bp universal primers for amplification (22 forward and 22 reverse)
+#Each address is encoded using a 19 bit binary number allowing upto 2^19 = 524288 uniques oligo addresses
+
+Step 1: Initialize the variables
+-Prepare file variables for input and output
+-Set up base pair mapping and synonyms (0-> A or C and 1-> G or T)
+
+Step 2: Define parameters
+- Number of bytes for each oligo => N=12
+- Length of the address bit => 19bp
+- F and R primers (22 bp long)
+
+Step 3: Initialize counters
+- Counter for bytes processed n=0
+- Seed =2 for uniform reproducibility
+- u1, u2, u3 to track last three bases to avoid homopolymers
+
+Step 4: Open input and output file
+
+Step 5: Read input file as chunks (64 kb) and convert it to bytes
+
+Step 6: convert bytes to DNA sequence
+- For each byte call the subroutine byte_to_basepair
+
+Step 7: Append the returned DNA sequence to the output file and increment byte counter
+
+Step 8: Insert primers for every 12 bytes. Also insert padding if the oligo length is not 12 bytes
+
+Step 9: Calculate next segment address using the subroutine address_to_basepair
+- each address is a 19 bit long binary number  ranging from 0000000000000000001 to 1111111111111111111
+
+Step 10: Write the data to the output file and close files
+Each oligo now consists of forward primer 22bp + address 19bp + data 96 bp + reverse primer 22bp
+
+Subroutines:
+byte_to_basepair(byte):
+- Extract 8 bits (MSB goes first)
+- For each bit, randomly map nucleotide
+- Check for homopolymers, if they occur, then replace with synonyms
+- append to base DNA sequence and return the 8bp long DNA sequence
+
+address_to_basepair(number):
+- for each bit in the address call byte_to_base pair and convert to DNA sequnces
+- return the final DNA sequence address
+
+
+Reference: Next-Generation Digital Information Storage in DNA by George M. Church, Yuan Gao, Sriram Kosuri
+
+
+
+
+
+
+-
